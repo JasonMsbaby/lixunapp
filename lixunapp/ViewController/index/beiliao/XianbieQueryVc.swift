@@ -18,6 +18,7 @@ class XianbieQueryVc: BaseVc,CmitBtnProtocol,AlertProtocol,UITextFieldDelegate,P
     var headImgV:UIImageView?
     var empCodeF:UITextField?
     var mudiF:UITextField?
+    var finishClosure:((empCode:String,line:String,objLine:String)->())?
     
     
     override func viewDidLoad() {
@@ -152,8 +153,29 @@ class XianbieQueryVc: BaseVc,CmitBtnProtocol,AlertProtocol,UITextFieldDelegate,P
     //MARK: this is click btn
     func clickCmitBtn(sender: UIButton) {
         
-        //        print("add commit btn")
-        showAlert("add commit btn")
+        guard let empCode = empCodeF?.text where empCode != "" else{
+            
+            showAlert("提示", message: "请填写工号")
+            return
+        }
+        
+        guard let line = xianbieF?.text where line != "" else{
+            
+            showAlert("提示", message: "请填写线别")
+            return
+        }
+        
+        guard let objLine = mudiF?.text where objLine != "" else{
+            
+            showAlert("提示", message: "请填写目的线别")
+            return
+        }
+        
+        if finishClosure != nil{
+            
+            finishClosure!(empCode: empCode,line: line,objLine: objLine)
+        }
+        
     }
     
     //MARK: text field delegate

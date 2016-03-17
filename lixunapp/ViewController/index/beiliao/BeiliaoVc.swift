@@ -56,6 +56,7 @@ class BeiliaoVc: BaseVc,AlertProtocol,MLKMenuPopoverDelegate,IndexTableViewDeleg
         case 0:
             self.pushNext(FaliaoVc())
         case 1:
+            self.pushNext(WebVc())
             print("流程");
         default:
             print("no selected")
@@ -86,17 +87,43 @@ class BeiliaoVc: BaseVc,AlertProtocol,MLKMenuPopoverDelegate,IndexTableViewDeleg
                 let form = WSFormConfirm(sourceFormNum1: model.sfs01,cnt1: String(model.sfs02),number1:txt)
                 let issue = WSCreateFormAppissue(plantID: user.CompanyCodeSel!, profitID: model.sfpud06, type: FormType.UPDATE.rawValue, id: user.empCode!, num: "1",form: [form])
                 
-                self.invoke(issue)
+                self.invoke(issue){
+                    res in
+                    
+                    if res{
+                        self.tableView.tableView?.reloadRowsAtIndexPaths([index], withRowAnimation: UITableViewRowAnimation.Automatic)
+                    }
+                    
+                    print("result is \(res)")
+                    
+                }
                 
             }
         }
     }
-    //取消
+    //取消备料
     func swipe_cancle(index:NSIndexPath,model:FatFeed){
+        guard let user = DataHelper.getUser() else{
+            
+            return
+        }
         
+        let form = WSFormConfirm(sourceFormNum1: model.sfs01,cnt1: String(model.sfs02),number1:model.sfs05)
+        let issue = WSCreateFormAppissue(plantID: user.CompanyCodeSel!, profitID: model.sfpud06, type: FormType.CANCEL.rawValue, id: user.empCode!, num: model.sfs05!,form: [form])
+        
+        invoke(issue){
+            
+            res in
+            
+            if res{
+                self.tableView.tableView?.reloadRowsAtIndexPaths([index], withRowAnimation: UITableViewRowAnimation.Automatic)
+            }
+            
+            print("result is \(res)")
+        }
     }
     
-    func invoke(req:WebserviceProtocol){
+    func invoke(req:WebserviceProtocol,finishClosure:((result:Bool)->())={_ in }){
         
         self.pp_hudShow(self.view)
         
@@ -107,8 +134,12 @@ class BeiliaoVc: BaseVc,AlertProtocol,MLKMenuPopoverDelegate,IndexTableViewDeleg
             switch result{
             case let .Success(value):
                 self?.showAlert("提示", message: "操作结果:\(value)")
+                let res = HttpHelper.SUCCESS == value
+                finishClosure(result: res)
+                
             case let .Failure(err):
-                self?.showAlert("出错了", message: "\(err.description)")
+                self?.showAlert("出错了", message: "\(err.userInfo)")
+                finishClosure(result: false)
             }
             
         })
@@ -124,6 +155,15 @@ class BeiliaoVc: BaseVc,AlertProtocol,MLKMenuPopoverDelegate,IndexTableViewDeleg
         let form = WSFormConfirm(sourceFormNum1: model.sfs01,cnt1: String(model.sfs02),number1:model.sfs05)
         let issue = WSCreateFormAppissue(plantID: user.CompanyCodeSel!, profitID: model.sfpud06, type: FormType.CONFIRM.rawValue, id: user.empCode!, num: model.sfs05!,form: [form])
         
-        invoke(issue)
+        invoke(issue){
+            
+            res in
+            
+            if res{
+                self.tableView.tableView?.reloadRowsAtIndexPaths([index], withRowAnimation: UITableViewRowAnimation.Automatic)
+            }
+            
+            print("result is \(res)")
+        }
     }
 }

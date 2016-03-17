@@ -12,7 +12,7 @@ import AEXML
 
 struct HttpHelper {
     
-    static let SUCCESS = "Go out for success"
+    static let SUCCESS = "执行成功"
     
     static func invokeJson(req:JsonReq,completionHandler: (Result<String, NSError> -> Void)? = nil){
         
@@ -54,16 +54,12 @@ struct HttpHelper {
         
         func createErr(failReason:String)->Result<String,NSError>{
             
-            let failureReason = "failReason"
+            let failureReason = failReason
             let error = Error.errorWithCode(.DataSerializationFailed, failureReason: failureReason)
             return .Failure(error)
         }
         
-        Alamofire.request(.POST, Constants.Config.webservice_url, parameters: ["xml":xml], encoding:ParameterEncoding.Custom(Request.contentEncode), headers: headers).responseString(completionHandler: { (response) -> Void in
-            
-            print("Response String: \(response.result.value)")
-            
-        }).responseXMLDocument { (response) -> Void in
+        Alamofire.request(.POST, Constants.Config.webservice_url, parameters: ["xml":xml], encoding:ParameterEncoding.Custom(Request.contentEncode), headers: headers).responseXMLDocument { (response) -> Void in
             
             let result:Result<String,NSError>;
             
@@ -71,9 +67,9 @@ struct HttpHelper {
             
             case let .Success(value):
                 
-//                print("resp xml:\(value.xmlString)")
-                
                 if let respXml = value.root["SOAP-ENV:Body"]["fjs1:TIPTOPGateWayResponse"]["strxmloutput"].value {
+                    
+                    print("resp xml:\(respXml)")
                     
                     let xml2 = try? AEXMLDocument(xmlData: respXml.dataUsingEncoding(NSUTF8StringEncoding)!)
                     
@@ -84,16 +80,16 @@ struct HttpHelper {
                             result = .Success(str)
                         } else{
                             
-                            result = createErr("xml 解析失败")
+                            result = createErr("xml 解析失败,\(respXml)")
                         }
                     }else{
                         
-                        result = createErr("xml 解析失败")
+                        result = createErr("xml 解析失败,\(respXml)")
                     }
                     
                 } else{
                     
-                    let failureReason = "Data could not be serialized. Input data was nil."
+                    let failureReason = "解析失败,\(value.xmlString)"
                     let error = Error.errorWithCode(.DataSerializationFailed, failureReason: failureReason)
                     result = .Failure(error)
                 }
@@ -108,17 +104,6 @@ struct HttpHelper {
                 completionHandler!(result)
             }
         };
-    }
-    
-    static func query(url:String){
-        
-        Alamofire.request(.GET, "https://httpbin.org/get")
-            .responseString { response in
-                print("Response String: \(response.result.value)")
-            }
-            .responseJSON { response in
-                print("Response JSON: \(response.result.value)")
-        }
     }
 }
 
@@ -170,7 +155,9 @@ extension Request {
                 let XML = try AEXMLDocument(xmlData: validData)
                 return .Success(XML)
             } catch {
-                return .Failure(error as NSError)
+                let err = error as NSError
+//                err.userInfo[NSLocalizedFailureReasonErrorKey] = String(data: data, encoding: NSUTF8StringEncoding)
+                return .Failure(err)
             }
         }
     }
