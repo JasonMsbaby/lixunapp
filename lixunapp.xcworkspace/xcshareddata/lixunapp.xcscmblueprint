@@ -1,0 +1,26 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "f1a86959-aa15-42e5-b33f-4c6c5cb46f5f++9260",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+    "f1a86959-aa15-42e5-b33f-4c6c5cb46f5f++9260" : {
+      "DVTSourceControlWorkingCopyRepositoryTagsLocationKey" : "lixun\/ios\/tags",
+      "DVTSourceControlWorkingCopyRepositoryPrimaryBranchLocationKey" : "lixun\/ios\/trunk"
+    }
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "f1a86959-aa15-42e5-b33f-4c6c5cb46f5f++9260" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "5739E03F-ED17-4C99-84D0-6B28DAC0368C",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "f1a86959-aa15-42e5-b33f-4c6c5cb46f5f++9260" : "trunk\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "lixunapp",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "lixunapp\/lixunapp.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "http:\/\/192.168.1.90:8088\/svn\/sky",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "f1a86959-aa15-42e5-b33f-4c6c5cb46f5f++9260"
+    }
+  ]
+}
